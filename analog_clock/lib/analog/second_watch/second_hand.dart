@@ -3,7 +3,7 @@
  * @Author: MrLiuYS
  * @Date: 2020-01-06 20:13:46
  * @LastEditors  : MrLiuYS
- * @LastEditTime : 2020-01-06 22:32:08
+ * @LastEditTime : 2020-01-06 22:47:44
  */
 import 'package:analog_clock/util/analog_util.dart';
 import 'package:flutter/material.dart';
@@ -147,17 +147,17 @@ class SecondHandPainter extends CustomPainter {
 
     Offset secondHand1 = Offset(
         radius -
-            math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond )) *
+            math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond -90 )) *
                 (shortSideSpacing),
         radius -
-            math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond )) *
+            math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond-90 )) *
                 (shortSideSpacing));
     Offset secondHand2 = Offset(
         radius +
-            math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond )) *
+            math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond-90 )) *
                 (radius - longSideSpacing),
         radius +
-            math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond)) *
+            math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond -90)) *
                 (radius - longSideSpacing));
 
     canvas.drawLine(secondHand1, secondHand2, _secondPaint);

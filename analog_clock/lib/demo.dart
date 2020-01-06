@@ -1,12 +1,48 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:ui';
 
-class Demo extends StatelessWidget {
-  const Demo({Key key}) : super(key: key);
+import 'analog/calendar_watch/calendar_dial_plate.dart';
+import 'analog/pointer_watch/pointer_dial_plate.dart';
+import 'analog/second_watch/second_dial_plate.dart';
+import 'analog/second_watch/second_hand.dart';
+import 'analog/week_watch/week_dial_plate.dart';
+
+class Demo extends StatefulWidget {
+  Demo({Key key}) : super(key: key);
+
+  @override
+  _DemoState createState() => _DemoState();
+}
+
+class _DemoState extends State<Demo> {
+  Timer timer;
+  DateTime datetime;
+
+  @override
+  void initState() {
+    super.initState();
+
+    datetime = DateTime.now();
+
+    // timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    //   setState(() {
+    //     datetime = DateTime.now();
+    //   });
+    // });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // timer.cancel();
     return Center(
         child: Stack(
       alignment: Alignment.center,
@@ -15,7 +51,13 @@ class Demo extends StatelessWidget {
           height: 300,
           width: 300,
           color: Colors.white,
-          child: CustomPaint(painter: CustomClock()),
+          child: CustomPaint(
+              painter: PointerDialPlate(
+
+                  // showHour: true,
+                  // showMinute: true,
+                  // showSecond: true,
+                  )),
         ),
         Positioned(
           left: 40,
@@ -24,24 +66,11 @@ class Demo extends StatelessWidget {
             height: 100,
             width: 100,
             color: Colors.transparent,
-            child: CustomPaint(painter: CustomClock(
-               numberTexts: [
-                  "1",
-                  "2",
-                  "3",
-                  "4",
-                  "5",
-                  "6",
-                  "7",
-                  "8",
-                  "9",
-                  "10",
-                  "11",
-                  "12"
-                ],
-                bgColor: Colors.white,
-                numberTextsFontSize: 10,
-                bigCircleStrokeWidth: 2,
+            child: CustomPaint(
+                painter: CalendarDialPlate(
+              bgColor: Colors.white,
+              numberTextsFontSize: 10,
+              bigCircleStrokeWidth: 2,
             )),
           ),
         ),
@@ -50,25 +79,41 @@ class Demo extends StatelessWidget {
           bottom: 35,
           // bottom: 0,
           child: Container(
-            height: 140,
-            width: 140,
+            height: 130,
+            width: 130,
             color: Colors.transparent,
             child: CustomPaint(
-              painter: CustomClock(
-                numberTexts: [
-                  "",
-                  "",
-                  "15",
-                  "",
-                  "",
-                  "30",
-                  "",
-                  "",
-                  "45",
-                  "",
-                  "",
-                  "60"
-                ],
+              painter: SecondDialPlate(
+                bigCircleStrokeWidth: 2,
+                bgColor: Colors.white,
+                numberTextsFontSize: 10,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          right: 35,
+          bottom: 35,
+          // bottom: 0,
+          child: Container(
+            height: 130,
+            width: 130,
+            color: Colors.transparent,
+            child: SecondHand(
+              dateTime: datetime,
+            ),
+          ),
+        ),
+        Positioned(
+          // left: 50,
+          top: 30,
+          // bottom: 0,
+          child: Container(
+            height: 110,
+            width: 110,
+            color: Colors.transparent,
+            child: CustomPaint(
+              painter: WeekDialPlate(
                 bgColor: Colors.white,
                 numberTextsFontSize: 10,
                 bigCircleStrokeWidth: 2,
@@ -104,14 +149,25 @@ class CustomClock extends CustomPainter {
   /// 文字颜色
   final Color numberTextsColor;
 
+  /// 文字字体
   final double numberTextsFontSize;
 
-  //文字画笔
+  /// 显示秒针
+  final bool showSecond;
+
+  /// 显示分钟
+  final bool showMinute;
+
+  /// 显示时针
+  final bool showHour;
+
+  ///文字画笔
   TextPainter _textPainter;
-  //大外圆
+
+  ///大外圆
   Paint _bigCirclePaint;
 
-  //粗刻度线
+  ///粗刻度线
   Paint _linePaint;
 
   CustomClock({
@@ -137,6 +193,9 @@ class CustomClock extends CustomPainter {
     this.tickMarksColor = Colors.black,
     this.numberTextsColor = Colors.black,
     this.numberTextsFontSize = 16,
+    this.showSecond = false,
+    this.showMinute = false,
+    this.showHour = false,
   }) {
     _textPainter = new TextPainter(
         textAlign: TextAlign.left, textDirection: TextDirection.ltr);
@@ -166,6 +225,7 @@ class CustomClock extends CustomPainter {
     double secondDistance =
         radius - bigCircleStrokeWidth - tickMarksStrokeLength;
 
+    //绘制背景色
     canvas.drawCircle(
         _centerOffset,
         (size.width - bigCircleStrokeWidth) / 2,
@@ -178,20 +238,6 @@ class CustomClock extends CustomPainter {
     canvas.drawCircle(_centerOffset, (size.width - bigCircleStrokeWidth) / 2,
         _bigCirclePaint);
 
-    // List<String> numberText = [
-    //   "Ⅰ",
-    //   "Ⅱ",
-    //   "Ⅲ",
-    //   "Ⅳ",
-    //   "Ⅴ",
-    //   "Ⅵ",
-    //   "Ⅶ",
-    //   "Ⅷ",
-    //   "Ⅸ",
-    //   "Ⅹ",
-    //   "XI",
-    //   "XII"
-    // ];
     //绘制刻度
     for (int i = 0; i < 60; i++) {
       Offset offset = Offset(
@@ -212,7 +258,6 @@ class CustomClock extends CustomPainter {
       String numberStr = numberTexts[((i ~/ 5) == 0 ? 12 : (i ~/ 5)) - 1];
       if (i % 5 == 0) {
         canvas.save();
-
         canvas.translate(0.0, -radius + bigCircleStrokeWidth * 5);
         _textPainter.text = TextSpan(
             style: new TextStyle(
@@ -230,11 +275,88 @@ class CustomClock extends CustomPainter {
     }
 
     canvas.restore();
+
+    // draw second hand
+
+    //绘制圆心
+    // canvas.drawCircle(_centerOffset, 6, _bigCirclePaint);
+
+    DateTime dateTime = DateTime.now();
+
+    if (showHour) {
+      final hourPaint = Paint()
+        ..color = Colors.grey[850]
+        ..strokeWidth = 8;
+      int hour = dateTime.hour;
+
+      Path path = Path()
+        ..moveTo(radius - math.cos(deg2Rad(360 / 12 * hour - 90)) * (20),
+            radius - math.sin(deg2Rad(360 / 12 * hour - 90)) * (20));
+      path.lineTo(radius - math.cos(deg2Rad(360 / 12 * (hour) - 45)) * (7),
+          radius - math.sin(deg2Rad(360 / 12 * (hour) - 45)) * (7));
+
+      path.lineTo(
+          radius + math.cos(deg2Rad(360 / 12 * hour - 90)) * (radius * 0.5),
+          radius + math.sin(deg2Rad(360 / 12 * hour - 90)) * (radius * 0.5));
+
+      path.lineTo(radius - math.cos(deg2Rad(360 / 12 * (hour) - 135)) * (7),
+          radius - math.sin(deg2Rad(360 / 12 * (hour) - 135)) * (7));
+
+      canvas.drawShadow(path, Colors.white, 2, true);
+      canvas.drawPath(path, hourPaint);
+    }
+
+    if (showMinute) {
+      final minutePaint = Paint()
+        ..color = Colors.grey[700]
+        ..strokeWidth = 3;
+
+      int minute = dateTime.minute;
+
+      Path path = Path()
+        ..moveTo(radius - math.cos(deg2Rad(360 / 60 * minute - 90)) * (20),
+            radius - math.sin(deg2Rad(360 / 60 * minute - 90)) * (20));
+      path.lineTo(radius - math.cos(deg2Rad(360 / 60 * (minute) - 45)) * (5),
+          radius - math.sin(deg2Rad(360 / 60 * (minute) - 45)) * (5));
+
+      path.lineTo(
+          radius + math.cos(deg2Rad(360 / 60 * minute - 90)) * (radius * 0.7),
+          radius + math.sin(deg2Rad(360 / 60 * minute - 90)) * (radius * 0.7));
+
+      path.lineTo(radius - math.cos(deg2Rad(360 / 60 * (minute) - 135)) * (5),
+          radius - math.sin(deg2Rad(360 / 60 * (minute) - 135)) * (5));
+
+      canvas.drawShadow(path, Colors.black, 2, true);
+      canvas.drawPath(path, minutePaint);
+    }
+
+    if (showSecond) {
+      int second = dateTime.second;
+
+      Offset secondHand1 = Offset(
+          radius - math.cos(deg2Rad(360 / 60 * second - 90)) * (radius * 0.1),
+          radius - math.sin(deg2Rad(360 / 60 * second - 90)) * (radius * 0.1));
+      Offset secondHand2 = Offset(
+          radius +
+              math.cos(deg2Rad(360 / 60 * second - 90)) *
+                  (radius - bigCircleStrokeWidth * 8),
+          radius +
+              math.sin(deg2Rad(360 / 60 * second - 90)) *
+                  (radius - bigCircleStrokeWidth * 8));
+      final secondPaint = Paint()
+        ..color = Colors.red
+        ..strokeWidth = 1;
+      canvas.drawLine(secondHand1, secondHand2, secondPaint);
+    }
+
+    //绘制圆心
+    canvas.drawCircle(_centerOffset, 1, _bigCirclePaint);
+
+    canvas.restore();
   }
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
-    // TODO: implement shouldRepaint
     return true;
   }
 

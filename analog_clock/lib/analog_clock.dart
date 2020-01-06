@@ -23,12 +23,12 @@ class _AnalogClockState extends State<AnalogClock> {
         // fit: StackFit.expand,
         // overflow: Overflow.visible,
         children: <Widget>[
-          PointerDialPlate(),
+          // PointerDialPlate(),
           // Center(
           //   child: PointerDialPlate(),
           // ),
-          SecondDialPlate(),
-          CalendarDialPlate(),
+          // SecondDialPlate(),
+          // CalendarDialPlate(),
           // Positioned(
           //   // top: 50,
           //   // left: 50,

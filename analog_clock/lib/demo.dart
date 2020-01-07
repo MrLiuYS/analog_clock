@@ -5,6 +5,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'analog/calendar_watch/calendar_dial_plate.dart';
+import 'analog/calendar_watch/calendar_hand.dart';
 import 'analog/pointer_watch/pointer_dial_plate.dart';
 import 'analog/second_watch/second_dial_plate.dart';
 import 'analog/second_watch/second_hand.dart';
@@ -27,11 +28,11 @@ class _DemoState extends State<Demo> {
 
     datetime = DateTime.now();
 
-    // timer = Timer.periodic(Duration(seconds: 1), (timer) {
-    //   setState(() {
-    //     datetime = DateTime.now();
-    //   });
-    // });
+    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        datetime = DateTime.now();
+      });
+    });
   }
 
   @override
@@ -51,13 +52,7 @@ class _DemoState extends State<Demo> {
           height: 300,
           width: 300,
           color: Colors.white,
-          child: CustomPaint(
-              painter: PointerDialPlate(
-
-                  // showHour: true,
-                  // showMinute: true,
-                  // showSecond: true,
-                  )),
+          child: CustomPaint(painter: PointerDialPlate()),
         ),
         Positioned(
           left: 40,
@@ -72,6 +67,16 @@ class _DemoState extends State<Demo> {
               numberTextsFontSize: 10,
               bigCircleStrokeWidth: 2,
             )),
+          ),
+        ),
+        Positioned(
+          left: 40,
+          bottom: 40,
+          child: Container(
+            height: 100,
+            width: 100,
+            color: Colors.transparent,
+            child: CalendarHand(dateTime: datetime),
           ),
         ),
         Positioned(

@@ -3,7 +3,7 @@
  * @Author: MrLiuYS
  * @Date: 2020-01-06 20:13:46
  * @LastEditors  : MrLiuYS
- * @LastEditTime : 2020-01-06 22:47:44
+ * @LastEditTime : 2020-01-07 21:36:10
  */
 import 'package:analog_clock/util/analog_util.dart';
 import 'package:flutter/material.dart';
@@ -44,10 +44,15 @@ class _SecondHandState extends State<SecondHand>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
 
-  double _second = 0 ;
+  double _second = 0;
+
+  DateTime _dateTime;
+
   @override
   void initState() {
     super.initState();
+
+    _dateTime = DateTime.now();
 
     _controller =
         AnimationController(vsync: this, duration: Duration(minutes: 1))
@@ -65,13 +70,9 @@ class _SecondHandState extends State<SecondHand>
     return AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
-
-          // _second = _second + _controller.value;
-
-          print("${_controller.value * 60 }  + ${ widget.dateTime.second } = ${_controller.value * 60  +  widget.dateTime.second}");
           return CustomPaint(
-            painter: SecondHandPainter(widget.dateTime,
-                second: (_controller.value * 60 + widget.dateTime.second ) ,
+            painter: SecondHandPainter(_dateTime,
+                second: (_controller.value * 60 + _dateTime.second),
                 longSideSpacing: widget.longSideSpacing,
                 shortSideSpacing: widget.shortSideSpacing,
                 sideColor: widget.sideColor,
@@ -80,18 +81,6 @@ class _SecondHandState extends State<SecondHand>
                 centerRadius: widget.centerRadius),
           );
         });
-
-    // return Container(
-    //   child: CustomPaint(
-    //     painter: SecondHandPainter(widget.dateTime,
-    //         longSideSpacing: widget.longSideSpacing,
-    //         shortSideSpacing: widget.shortSideSpacing,
-    //         sideColor: widget.sideColor,
-    //         sideWidth: widget.sideWidth,
-    //         centerPointColor: widget.centerPointColor,
-    //         centerRadius: widget.centerRadius),
-    //   ),
-    // );
   }
 }
 
@@ -147,17 +136,17 @@ class SecondHandPainter extends CustomPainter {
 
     Offset secondHand1 = Offset(
         radius -
-            math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond -90 )) *
+            math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
                 (shortSideSpacing),
         radius -
-            math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond-90 )) *
+            math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
                 (shortSideSpacing));
     Offset secondHand2 = Offset(
         radius +
-            math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond-90 )) *
+            math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
                 (radius - longSideSpacing),
         radius +
-            math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond -90)) *
+            math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
                 (radius - longSideSpacing));
 
     canvas.drawLine(secondHand1, secondHand2, _secondPaint);

@@ -6,10 +6,11 @@ import 'dart:ui';
 
 import 'analog/calendar_watch/calendar_dial_plate.dart';
 import 'analog/calendar_watch/calendar_hand.dart';
+import 'analog/month_watch/month_dial_plate.dart';
+import 'analog/month_watch/month_hand.dart';
 import 'analog/pointer_watch/pointer_dial_plate.dart';
 import 'analog/second_watch/second_dial_plate.dart';
 import 'analog/second_watch/second_hand.dart';
-import 'analog/week_watch/week_dial_plate.dart';
 
 class Demo extends StatefulWidget {
   Demo({Key key}) : super(key: key);
@@ -118,11 +119,24 @@ class _DemoState extends State<Demo> {
             width: 110,
             color: Colors.transparent,
             child: CustomPaint(
-              painter: WeekDialPlate(
+              painter: MonthDialPlate(
                 bgColor: Colors.white,
                 numberTextsFontSize: 10,
                 bigCircleStrokeWidth: 2,
               ),
+            ),
+          ),
+        ),
+        Positioned(
+          // left: 50,
+          top: 30,
+          // bottom: 0,
+          child: Container(
+            height: 110,
+            width: 110,
+            color: Colors.transparent,
+            child: MonthHand(
+              dateTime: datetime,
             ),
           ),
         ),

@@ -3,7 +3,7 @@
  * @Author: MrLiuYS
  * @Date: 2019-12-28 22:24:28
  * @LastEditors  : MrLiuYS
- * @LastEditTime : 2020-01-06 20:41:11
+ * @LastEditTime : 2020-01-07 22:25:45
  */
 import 'package:analog_clock/util/analog_util.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:ui';
 
-class WeekDialPlate extends CustomPainter {
+class MonthDialPlate extends CustomPainter {
   final Color bgColor;
 
   /// 外边圆宽度,默认4
@@ -44,7 +44,7 @@ class WeekDialPlate extends CustomPainter {
   ///粗刻度线
   Paint _linePaint;
 
-  WeekDialPlate({
+  MonthDialPlate({
     this.bgColor = Colors.transparent,
     this.bigCircleStrokeWidth = 4,
     this.bigCircleColor = Colors.black,

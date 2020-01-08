@@ -3,7 +3,7 @@
  * @Author: MrLiuYS
  * @Date: 2020-01-06 20:13:46
  * @LastEditors  : MrLiuYS
- * @LastEditTime : 2020-01-07 21:36:10
+ * @LastEditTime : 2020-01-08 22:14:36
  */
 import 'package:analog_clock/util/analog_util.dart';
 import 'package:flutter/material.dart';
@@ -134,22 +134,58 @@ class SecondHandPainter extends CustomPainter {
 
     double pSecond = second ?? dateTime.second;
 
-    Offset secondHand1 = Offset(
+    Path path = Path()
+      ..moveTo(
+          radius -
+              math.cos(AnalogUtil.deg2Rad(360.0 / 60 * pSecond - 90)) *
+                  (shortSideSpacing),
+          radius -
+              math.sin(AnalogUtil.deg2Rad(360.0 / 60 * pSecond - 90)) *
+                  (shortSideSpacing));
+    path.lineTo(
         radius -
-            math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
-                (shortSideSpacing),
+            math.cos(AnalogUtil.deg2Rad(360.0 / 60 * (pSecond) - 45)) *
+                (shortSideSpacing / 5),
         radius -
-            math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
-                (shortSideSpacing));
-    Offset secondHand2 = Offset(
+            math.sin(AnalogUtil.deg2Rad(360.0 / 60 * (pSecond) - 45)) *
+                (shortSideSpacing / 5));
+
+    path.lineTo(
         radius +
-            math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
+            math.cos(AnalogUtil.deg2Rad(360.0 / 60 * pSecond - 90)) *
                 (radius - longSideSpacing),
         radius +
-            math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
+            math.sin(AnalogUtil.deg2Rad(360.0 / 60 * pSecond - 90)) *
                 (radius - longSideSpacing));
 
-    canvas.drawLine(secondHand1, secondHand2, _secondPaint);
+    path.lineTo(
+        radius -
+            math.cos(AnalogUtil.deg2Rad(360 / 60 * (pSecond) - 135)) *
+                (shortSideSpacing / 5),
+        radius -
+            math.sin(AnalogUtil.deg2Rad(360 / 60 * (pSecond) - 135)) *
+                (shortSideSpacing / 5));
+
+    // canvas.drawShadow(path, Colors.white, 2, true);
+    canvas.drawPath(path, _secondPaint);
+
+
+    // Offset secondHand1 = Offset(
+    //     radius -
+    //         math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
+    //             (shortSideSpacing),
+    //     radius -
+    //         math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
+    //             (shortSideSpacing));
+    // Offset secondHand2 = Offset(
+    //     radius +
+    //         math.cos(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
+    //             (radius - longSideSpacing),
+    //     radius +
+    //         math.sin(AnalogUtil.deg2Rad(360 / 60 * pSecond - 90)) *
+    //             (radius - longSideSpacing));
+
+    // canvas.drawLine(secondHand1, secondHand2, _secondPaint);
 
     canvas.drawCircle(_centerOffset, centerRadius, _centerCirclePaint);
 

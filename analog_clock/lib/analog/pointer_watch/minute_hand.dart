@@ -1,9 +1,9 @@
 /*
- * @Description: 月历指针
+ * @Description: 分针
  * @Author: MrLiuYS
- * @Date: 2020-01-07 21:36:30
+ * @Date: 2020-01-08 21:35:16
  * @LastEditors  : MrLiuYS
- * @LastEditTime : 2020-01-08 22:03:35
+ * @LastEditTime : 2020-01-08 22:02:32
  */
 
 import 'package:analog_clock/util/analog_util.dart';
@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:ui';
 
-class CalendarHand extends StatefulWidget {
+class MinuteHand extends StatefulWidget {
   final DateTime dateTime;
 
   final double longSideSpacing;
@@ -26,7 +26,7 @@ class CalendarHand extends StatefulWidget {
 
   final double centerRadius;
 
-  CalendarHand(
+  MinuteHand(
       {Key key,
       this.dateTime,
       this.longSideSpacing = 10,
@@ -38,10 +38,10 @@ class CalendarHand extends StatefulWidget {
       : super(key: key);
 
   @override
-  _CalendarHandState createState() => _CalendarHandState();
+  _MinuteHandState createState() => _MinuteHandState();
 }
 
-class _CalendarHandState extends State<CalendarHand> {
+class _MinuteHandState extends State<MinuteHand> {
   @override
   void initState() {
     super.initState();
@@ -55,7 +55,7 @@ class _CalendarHandState extends State<CalendarHand> {
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
-      painter: CalendarHandPainter(widget.dateTime,
+      painter: MinuteHandPainter(widget.dateTime,
           longSideSpacing: widget.longSideSpacing,
           shortSideSpacing: widget.shortSideSpacing,
           sideColor: widget.sideColor,
@@ -66,7 +66,7 @@ class _CalendarHandState extends State<CalendarHand> {
   }
 }
 
-class CalendarHandPainter extends CustomPainter {
+class MinuteHandPainter extends CustomPainter {
   final DateTime dateTime;
 
   final double longSideSpacing;
@@ -85,7 +85,7 @@ class CalendarHandPainter extends CustomPainter {
 
   Paint _calendarPaint;
 
-  CalendarHandPainter(
+  MinuteHandPainter(
     this.dateTime, {
     this.longSideSpacing,
     this.shortSideSpacing,
@@ -111,51 +111,44 @@ class CalendarHandPainter extends CustomPainter {
     //半径
     double radius = math.min(size.width / 2.0, size.height / 2.0);
 
-    double month = dateTime.month.toDouble();
-    double day = dateTime.day.toDouble();
+    //+1 是因为表盘是从 * 开始算的
+    double minute = dateTime.minute.toDouble() ;
 
-    var dateNextMonthDate = DateTime(dateTime.year, dateTime.month + 1, 1);
-    int nextTimeSamp =
-        dateNextMonthDate.millisecondsSinceEpoch - 24 * 60 * 60 * 1000;
-    DateTime nextDateTime = DateTime.fromMillisecondsSinceEpoch(nextTimeSamp);
-
-    int dayMax = nextDateTime.day;
-
-    month = month * 5 + day / dayMax * 5;
+    minute = minute + dateTime.second / 60;
 
     Path path = Path()
       ..moveTo(
           radius -
-              math.cos(AnalogUtil.deg2Rad(360 / 60 * month - 90)) *
+              math.cos(AnalogUtil.deg2Rad(360.0 / 60 * minute - 90)) *
                   (shortSideSpacing),
           radius -
-              math.sin(AnalogUtil.deg2Rad(360 / 60 * month - 90)) *
+              math.sin(AnalogUtil.deg2Rad(360.0 / 60 * minute - 90)) *
                   (shortSideSpacing));
     path.lineTo(
         radius -
-            math.cos(AnalogUtil.deg2Rad(360 / 60 * (month) - 45)) *
-                (shortSideSpacing / 5),
+            math.cos(AnalogUtil.deg2Rad(360.0 / 60 * (minute) - 45)) *
+                (shortSideSpacing / 4),
         radius -
-            math.sin(AnalogUtil.deg2Rad(360 / 60 * (month) - 45)) *
-                (shortSideSpacing / 5));
+            math.sin(AnalogUtil.deg2Rad(360.0 / 60 * (minute) - 45)) *
+                (shortSideSpacing / 4));
 
     path.lineTo(
         radius +
-            math.cos(AnalogUtil.deg2Rad(360 / 60 * month - 90)) *
+            math.cos(AnalogUtil.deg2Rad(360.0 / 60 * minute - 90)) *
                 (radius - longSideSpacing),
         radius +
-            math.sin(AnalogUtil.deg2Rad(360 / 60 * month - 90)) *
+            math.sin(AnalogUtil.deg2Rad(360.0 / 60 * minute - 90)) *
                 (radius - longSideSpacing));
 
     path.lineTo(
         radius -
-            math.cos(AnalogUtil.deg2Rad(360 / 60 * (month) - 135)) *
-                (shortSideSpacing / 5),
+            math.cos(AnalogUtil.deg2Rad(360 / 60 * (minute) - 135)) *
+                (shortSideSpacing / 4),
         radius -
-            math.sin(AnalogUtil.deg2Rad(360 / 60 * (month) - 135)) *
-                (shortSideSpacing / 5));
+            math.sin(AnalogUtil.deg2Rad(360 / 60 * (minute) - 135)) *
+                (shortSideSpacing / 4));
 
-    canvas.drawShadow(path, Colors.white, 2, true);
+    // canvas.drawShadow(path, Colors.white, 2, true);
     canvas.drawPath(path, _calendarPaint);
 
     canvas.drawCircle(_centerOffset, centerRadius, _centerCirclePaint);

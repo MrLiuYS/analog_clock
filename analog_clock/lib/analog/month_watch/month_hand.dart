@@ -3,7 +3,7 @@
  * @Author: MrLiuYS
  * @Date: 2020-01-07 22:21:38
  * @LastEditors  : MrLiuYS
- * @LastEditTime : 2020-01-07 22:49:46
+ * @LastEditTime : 2020-01-08 22:04:54
  */
 
 import 'package:analog_clock/util/analog_util.dart';
@@ -111,10 +111,6 @@ class MonthHandPainter extends CustomPainter {
     //半径
     double radius = math.min(size.width / 2.0, size.height / 2.0);
 
-    // double month = dateTime.month.toDouble();
-
-    print("今天是${dateTime.day} : ${dateTime.hour}");
-
     //+1 是因为表盘是从 * 开始算的
     double day = dateTime.day.toDouble() + 1;
 
@@ -131,10 +127,10 @@ class MonthHandPainter extends CustomPainter {
     path.lineTo(
         radius -
             math.cos(AnalogUtil.deg2Rad(360.0 / 32 * (day) - 45)) *
-                (shortSideSpacing / 3),
+                (shortSideSpacing / 5),
         radius -
             math.sin(AnalogUtil.deg2Rad(360.0 / 32 * (day) - 45)) *
-                (shortSideSpacing / 3));
+                (shortSideSpacing / 5));
 
     path.lineTo(
         radius +
@@ -147,10 +143,10 @@ class MonthHandPainter extends CustomPainter {
     path.lineTo(
         radius -
             math.cos(AnalogUtil.deg2Rad(360 / 32 * (day) - 135)) *
-                (shortSideSpacing / 3),
+                (shortSideSpacing / 5),
         radius -
             math.sin(AnalogUtil.deg2Rad(360 / 32 * (day) - 135)) *
-                (shortSideSpacing / 3));
+                (shortSideSpacing / 5));
 
     canvas.drawShadow(path, Colors.white, 2, true);
     canvas.drawPath(path, _calendarPaint);

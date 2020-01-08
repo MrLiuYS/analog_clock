@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:analog_clock/analog/pointer_watch/hour_hand.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 import 'dart:ui';
@@ -8,6 +9,7 @@ import 'analog/calendar_watch/calendar_dial_plate.dart';
 import 'analog/calendar_watch/calendar_hand.dart';
 import 'analog/month_watch/month_dial_plate.dart';
 import 'analog/month_watch/month_hand.dart';
+import 'analog/pointer_watch/minute_hand.dart';
 import 'analog/pointer_watch/pointer_dial_plate.dart';
 import 'analog/second_watch/second_dial_plate.dart';
 import 'analog/second_watch/second_hand.dart';
@@ -57,10 +59,10 @@ class _DemoState extends State<Demo> {
         ),
         Positioned(
           left: 40,
-          bottom: 40,
+          bottom: 70,
           child: Container(
-            height: 100,
-            width: 100,
+            height: 90,
+            width: 90,
             color: Colors.transparent,
             child: CustomPaint(
                 painter: CalendarDialPlate(
@@ -72,21 +74,25 @@ class _DemoState extends State<Demo> {
         ),
         Positioned(
           left: 40,
-          bottom: 40,
+          bottom: 70,
           child: Container(
-            height: 100,
-            width: 100,
+            height: 90,
+            width: 90,
             color: Colors.transparent,
-            child: CalendarHand(dateTime: datetime),
+            child: CalendarHand(
+                dateTime: datetime,
+                sideColor: Colors.blue,
+                centerRadius: 3,
+                centerPointColor: Colors.blue),
           ),
         ),
         Positioned(
-          right: 35,
-          bottom: 35,
+          right: 40,
+          bottom: 40,
           // bottom: 0,
           child: Container(
-            height: 130,
-            width: 130,
+            height: 110,
+            width: 110,
             color: Colors.transparent,
             child: CustomPaint(
               painter: SecondDialPlate(
@@ -98,25 +104,26 @@ class _DemoState extends State<Demo> {
           ),
         ),
         Positioned(
-          right: 35,
-          bottom: 35,
-          // bottom: 0,
-          child: Container(
-            height: 130,
-            width: 130,
-            color: Colors.transparent,
-            child: SecondHand(
-              dateTime: datetime,
-            ),
-          ),
-        ),
-        Positioned(
-          // left: 50,
-          top: 30,
+          right: 40,
+          bottom: 40,
           // bottom: 0,
           child: Container(
             height: 110,
             width: 110,
+            color: Colors.transparent,
+            child: SecondHand(
+              dateTime: datetime,
+              centerPointColor: Colors.red,
+            ),
+          ),
+        ),
+        Positioned(
+          
+          top: 30,
+          
+          child: Container(
+            height: 100,
+            width: 100,
             color: Colors.transparent,
             child: CustomPaint(
               painter: MonthDialPlate(
@@ -132,12 +139,39 @@ class _DemoState extends State<Demo> {
           top: 30,
           // bottom: 0,
           child: Container(
-            height: 110,
-            width: 110,
+            height: 100,
+            width: 100,
             color: Colors.transparent,
             child: MonthHand(
-              dateTime: datetime,
-            ),
+                dateTime: datetime,
+                sideColor: Colors.green,
+                centerRadius: 3,
+                centerPointColor: Colors.green),
+          ),
+        ),
+        Container(
+          height: 300,
+          width: 300,
+          child: HourHand(
+            dateTime: datetime,
+            longSideSpacing: 70,
+            shortSideSpacing: 20,
+            centerRadius: 10,
+            sideColor: Colors.grey[850],//Color(0xFF4285F4),
+            centerPointColor: Colors.grey[850],//Color(0xFF4285F4),
+          ),
+        ),
+        Container(
+          height: 300,
+          width: 300,
+          child: MinuteHand(
+            dateTime: datetime,
+            longSideSpacing: 20,
+            shortSideSpacing: 20,
+            sideColor: Colors.grey[850],//Color(0xFF4285F4),
+            // sideColor: Colors.blue[900],
+            centerRadius: 6,
+            centerPointColor: Colors.grey[700],//Color(0xFF8AB4F8),
           ),
         ),
       ],

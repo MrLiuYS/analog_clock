@@ -3,8 +3,9 @@
  * @Author: MrLiuYS
  * @Date: 2019-12-28 22:24:28
  * @LastEditors  : MrLiuYS
- * @LastEditTime : 2020-01-07 22:25:45
+ * @LastEditTime : 2020-01-11 00:29:42
  */
+import 'package:analog_clock/util/analog_config.dart';
 import 'package:analog_clock/util/analog_util.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ import 'dart:ui';
 class MonthDialPlate extends CustomPainter {
   final Color bgColor;
 
-  /// 外边圆宽度,默认4
+  /// 外边圆宽度,默认2
   final double bigCircleStrokeWidth;
 
   /// 外边圆颜色,默认黑色
@@ -45,14 +46,14 @@ class MonthDialPlate extends CustomPainter {
   Paint _linePaint;
 
   MonthDialPlate({
-    this.bgColor = Colors.transparent,
-    this.bigCircleStrokeWidth = 4,
+    this.bgColor = Colors.white,
+    this.bigCircleStrokeWidth = 2,
     this.bigCircleColor = Colors.black,
     this.tickMarksStrokeWidth = 1,
     this.tickMarksStrokeLength = 4,
     this.tickMarksColor = Colors.black,
     this.numberTextsColor = Colors.black,
-    this.numberTextsFontSize = 16,
+    this.numberTextsFontSize = 10,
   }) {
     _textPainter = new TextPainter(
         textAlign: TextAlign.left, textDirection: TextDirection.ltr);
@@ -70,41 +71,7 @@ class MonthDialPlate extends CustomPainter {
       ..strokeWidth = tickMarksStrokeWidth;
   }
 
-  List<String> numberTexts = [
-    "•",
-    "1",
-    "•",
-    "3",
-    "•",
-    "5",
-    "•",
-    "7",
-    "•",
-    "9",
-    "•",
-    "11",
-    "•",
-    "13",
-    "•",
-    "15",
-    "•",
-    "17",
-    "•",
-    "19",
-    "•",
-    "21",
-    "•",
-    "23",
-    "•",
-    "25",
-    "•",
-    "27",
-    "•",
-    "29",
-    "•",
-    "31",
-    
-  ];
+  List<String> numberTexts = AnalogConfig.monthNumberTexts;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -142,9 +109,11 @@ class MonthDialPlate extends CustomPainter {
               radius);
 
       Offset innerOffset = Offset(
-          math.cos(AnalogUtil.deg2Rad(360 / numberTexts.length * i - 90)) * radius +
+          math.cos(AnalogUtil.deg2Rad(360 / numberTexts.length * i - 90)) *
+                  radius +
               radius,
-          math.sin(AnalogUtil.deg2Rad(360 / numberTexts.length * i - 90)) * radius +
+          math.sin(AnalogUtil.deg2Rad(360 / numberTexts.length * i - 90)) *
+                  radius +
               radius);
 
       _linePaint.strokeWidth = i % 2 == 0 ? 2 : 1; //设置线的粗细
@@ -153,26 +122,16 @@ class MonthDialPlate extends CustomPainter {
     canvas.save();
     canvas.translate(radius, radius);
 
-    for (var i = 0; i < numberTexts.length; i++) {
-      canvas.rotate(AnalogUtil.deg2Rad(
-          360 / numberTexts.length)); // deg2Rad(360 / numberTexts.length * i )
-
-      String numberStr = numberTexts[i];
-
-      canvas.save();
-      canvas.translate(0.0, -radius + bigCircleStrokeWidth * 5);
-      _textPainter.text = TextSpan(
-          style: new TextStyle(
-            color: numberTextsColor,
-            fontSize: numberTextsFontSize,
-          ),
-          text: numberStr);
-
-      _textPainter.layout();
-      _textPainter.paint(canvas,
-          new Offset(-(_textPainter.width / 2), -(_textPainter.height / 2)));
-      canvas.restore();
-    }
+    AnalogUtil.drawDialPlateText(
+      canvas,
+      numberTexts,
+      radius,
+      0.0,
+      -radius + bigCircleStrokeWidth * 5,
+      _textPainter,
+      numberTextsColor,
+      numberTextsFontSize,
+    );
 
     canvas.restore();
 
@@ -184,7 +143,4 @@ class MonthDialPlate extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
-
-  
-  
 }

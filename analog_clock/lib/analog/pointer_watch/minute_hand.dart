@@ -3,13 +3,12 @@
  * @Author: MrLiuYS
  * @Date: 2020-01-08 21:35:16
  * @LastEditors  : MrLiuYS
- * @LastEditTime : 2020-01-08 22:02:32
+ * @LastEditTime : 2020-01-11 00:36:55
  */
 
 import 'package:analog_clock/util/analog_util.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
-import 'dart:ui';
+import 'dart:math';
 
 class MinuteHand extends StatefulWidget {
   final DateTime dateTime;
@@ -29,12 +28,12 @@ class MinuteHand extends StatefulWidget {
   MinuteHand(
       {Key key,
       this.dateTime,
-      this.longSideSpacing = 10,
-      this.shortSideSpacing = 10,
+      this.longSideSpacing = 20,
+      this.shortSideSpacing = 20,
       this.sideWidth = 1,
       this.sideColor = Colors.black,
       this.centerPointColor = Colors.black,
-      this.centerRadius = 3})
+      this.centerRadius = 6})
       : super(key: key);
 
   @override
@@ -109,47 +108,23 @@ class MinuteHandPainter extends CustomPainter {
     Offset _centerOffset = Offset(size.width / 2.0, size.height / 2.0);
 
     //半径
-    double radius = math.min(size.width / 2.0, size.height / 2.0);
+    double radius = min(size.width / 2.0, size.height / 2.0);
 
     //+1 是因为表盘是从 * 开始算的
-    double minute = dateTime.minute.toDouble() ;
+    double minute = dateTime.minute.toDouble();
 
     minute = minute + dateTime.second / 60;
 
-    Path path = Path()
-      ..moveTo(
-          radius -
-              math.cos(AnalogUtil.deg2Rad(360.0 / 60 * minute - 90)) *
-                  (shortSideSpacing),
-          radius -
-              math.sin(AnalogUtil.deg2Rad(360.0 / 60 * minute - 90)) *
-                  (shortSideSpacing));
-    path.lineTo(
-        radius -
-            math.cos(AnalogUtil.deg2Rad(360.0 / 60 * (minute) - 45)) *
-                (shortSideSpacing / 4),
-        radius -
-            math.sin(AnalogUtil.deg2Rad(360.0 / 60 * (minute) - 45)) *
-                (shortSideSpacing / 4));
-
-    path.lineTo(
-        radius +
-            math.cos(AnalogUtil.deg2Rad(360.0 / 60 * minute - 90)) *
-                (radius - longSideSpacing),
-        radius +
-            math.sin(AnalogUtil.deg2Rad(360.0 / 60 * minute - 90)) *
-                (radius - longSideSpacing));
-
-    path.lineTo(
-        radius -
-            math.cos(AnalogUtil.deg2Rad(360 / 60 * (minute) - 135)) *
-                (shortSideSpacing / 4),
-        radius -
-            math.sin(AnalogUtil.deg2Rad(360 / 60 * (minute) - 135)) *
-                (shortSideSpacing / 4));
-
-    // canvas.drawShadow(path, Colors.white, 2, true);
-    canvas.drawPath(path, _calendarPaint);
+    AnalogUtil.pointHand(
+      canvas,
+      _calendarPaint,
+      radius,
+      minute,
+      60,
+      shortSideSpacing,
+      longSideSpacing,
+      shortSideSpacing / 5,
+    );
 
     canvas.drawCircle(_centerOffset, centerRadius, _centerCirclePaint);
 

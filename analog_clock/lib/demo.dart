@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:analog_clock/analog/pointer_watch/hour_hand.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -13,6 +14,7 @@ import 'analog/pointer_watch/minute_hand.dart';
 import 'analog/pointer_watch/pointer_dial_plate.dart';
 import 'analog/second_watch/second_dial_plate.dart';
 import 'analog/second_watch/second_hand.dart';
+import 'analog_provider.dart';
 
 class Demo extends StatefulWidget {
   Demo({Key key}) : super(key: key);
@@ -22,160 +24,139 @@ class Demo extends StatefulWidget {
 }
 
 class _DemoState extends State<Demo> {
-  Timer timer;
-  DateTime datetime;
+  Timer _timer;
+
+  AnalogProvider _analogProvider;
 
   @override
   void initState() {
     super.initState();
 
-    datetime = DateTime.now();
+    _analogProvider = AnalogProvider();
 
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        datetime = DateTime.now();
-      });
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _analogProvider.dateTime = DateTime.now();
     });
   }
 
   @override
   void dispose() {
-    timer.cancel();
+    _timer.cancel();
+    _analogProvider.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // timer.cancel();
+    return ChangeNotifierProvider<AnalogProvider>.value(
+      value: _analogProvider,
+      child: Consumer<AnalogProvider>(builder: (context, analogProvider, _) {
+        return watchWidget(context, analogProvider, _);
+      }),
+    );
+  }
+
+  Widget watchWidget(BuildContext context, AnalogProvider value, Widget child) {
     return Center(
-        child: Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Container(
-          height: 300,
-          width: 300,
-          color: Colors.white,
-          child: CustomPaint(painter: PointerDialPlate()),
-        ),
-        Positioned(
-          left: 40,
-          bottom: 70,
-          child: Container(
-            height: 90,
-            width: 90,
-            color: Colors.transparent,
-            child: CustomPaint(
-                painter: CalendarDialPlate(
-              bgColor: Colors.white,
-              numberTextsFontSize: 10,
-              bigCircleStrokeWidth: 2,
-            )),
+      child: Stack(
+        alignment: Alignment.center,
+        children: <Widget>[
+          Container(
+            height: 300,
+            width: 300,
+            color: Colors.white,
+            child: CustomPaint(painter: PointerDialPlate()),
           ),
-        ),
-        Positioned(
-          left: 40,
-          bottom: 70,
-          child: Container(
-            height: 90,
-            width: 90,
-            color: Colors.transparent,
-            child: CalendarHand(
-                dateTime: datetime,
-                sideColor: Colors.blue,
-                centerRadius: 3,
-                centerPointColor: Colors.blue),
-          ),
-        ),
-        Positioned(
-          right: 40,
-          bottom: 40,
-          // bottom: 0,
-          child: Container(
-            height: 110,
-            width: 110,
-            color: Colors.transparent,
-            child: CustomPaint(
-              painter: SecondDialPlate(
-                bigCircleStrokeWidth: 2,
-                bgColor: Colors.white,
-                numberTextsFontSize: 10,
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          right: 40,
-          bottom: 40,
-          // bottom: 0,
-          child: Container(
-            height: 110,
-            width: 110,
-            color: Colors.transparent,
-            child: SecondHand(
-              dateTime: datetime,
-              centerPointColor: Colors.red,
-            ),
-          ),
-        ),
-        Positioned(
-          
-          top: 30,
-          
-          child: Container(
-            height: 100,
-            width: 100,
-            color: Colors.transparent,
-            child: CustomPaint(
-              painter: MonthDialPlate(
+          Positioned(
+            left: 40,
+            bottom: 70,
+            child: Container(
+              height: 90,
+              width: 90,
+              color: Colors.transparent,
+              child: CustomPaint(
+                  painter: CalendarDialPlate(
                 bgColor: Colors.white,
                 numberTextsFontSize: 10,
                 bigCircleStrokeWidth: 2,
+              )),
+            ),
+          ),
+          Positioned(
+            right: 40,
+            bottom: 40,
+            // bottom: 0,
+            child: Container(
+              height: 110,
+              width: 110,
+              color: Colors.transparent,
+              child: CustomPaint(
+                painter: SecondDialPlate(),
               ),
             ),
           ),
-        ),
-        Positioned(
-          // left: 50,
-          top: 30,
-          // bottom: 0,
-          child: Container(
-            height: 100,
-            width: 100,
-            color: Colors.transparent,
-            child: MonthHand(
-                dateTime: datetime,
-                sideColor: Colors.green,
-                centerRadius: 3,
-                centerPointColor: Colors.green),
+          Positioned(
+            top: 30,
+            child: Container(
+              height: 100,
+              width: 100,
+              color: Colors.transparent,
+              child: CustomPaint(
+                painter: MonthDialPlate(),
+              ),
+            ),
           ),
-        ),
-        Container(
-          height: 300,
-          width: 300,
-          child: HourHand(
-            dateTime: datetime,
-            longSideSpacing: 70,
-            shortSideSpacing: 20,
-            centerRadius: 10,
-            sideColor: Colors.grey[850],//Color(0xFF4285F4),
-            centerPointColor: Colors.grey[850],//Color(0xFF4285F4),
+          Positioned(
+            right: 40,
+            bottom: 40,
+            // bottom: 0,
+            child: Container(
+              height: 110,
+              width: 110,
+              color: Colors.transparent,
+              child: SecondHand(dateTime: _analogProvider.dateTime),
+            ),
           ),
-        ),
-        Container(
-          height: 300,
-          width: 300,
-          child: MinuteHand(
-            dateTime: datetime,
-            longSideSpacing: 20,
-            shortSideSpacing: 20,
-            sideColor: Colors.grey[850],//Color(0xFF4285F4),
-            // sideColor: Colors.blue[900],
-            centerRadius: 6,
-            centerPointColor: Colors.grey[700],//Color(0xFF8AB4F8),
+          Positioned(
+            left: 40,
+            bottom: 70,
+            child: Container(
+              height: 90,
+              width: 90,
+              color: Colors.transparent,
+              child: CalendarHand(dateTime: _analogProvider.dateTime),
+            ),
           ),
-        ),
-      ],
-    ));
+          Positioned(
+            top: 30,
+            child: Container(
+              height: 100,
+              width: 100,
+              color: Colors.transparent,
+              child: MonthHand(dateTime: _analogProvider.dateTime),
+            ),
+          ),
+          Container(
+            height: 300,
+            width: 300,
+            child: HourHand(
+              dateTime: _analogProvider.dateTime,
+              sideColor: Colors.grey[850],
+              centerPointColor: Colors.grey[850],
+            ),
+          ),
+          Container(
+            height: 300,
+            width: 300,
+            child: MinuteHand(
+              dateTime: _analogProvider.dateTime,
+              sideColor: Colors.grey[850],
+              centerPointColor: Colors.grey[700],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

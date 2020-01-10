@@ -3,13 +3,12 @@
  * @Author: MrLiuYS
  * @Date: 2020-01-08 21:28:34
  * @LastEditors  : MrLiuYS
- * @LastEditTime : 2020-01-08 21:33:02
+ * @LastEditTime : 2020-01-11 00:32:10
  */
 
 import 'package:analog_clock/util/analog_util.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
-import 'dart:ui';
+import 'dart:math';
 
 class HourHand extends StatefulWidget {
   final DateTime dateTime;
@@ -29,12 +28,12 @@ class HourHand extends StatefulWidget {
   HourHand(
       {Key key,
       this.dateTime,
-      this.longSideSpacing = 10,
-      this.shortSideSpacing = 10,
+      this.longSideSpacing = 70,
+      this.shortSideSpacing = 20,
       this.sideWidth = 1,
       this.sideColor = Colors.black,
       this.centerPointColor = Colors.black,
-      this.centerRadius = 3})
+      this.centerRadius = 10})
       : super(key: key);
 
   @override
@@ -109,47 +108,24 @@ class HourHandPainter extends CustomPainter {
     Offset _centerOffset = Offset(size.width / 2.0, size.height / 2.0);
 
     //半径
-    double radius = math.min(size.width / 2.0, size.height / 2.0);
+    double radius = min(size.width / 2.0, size.height / 2.0);
 
     //+1 是因为表盘是从 * 开始算的
-    double hour = dateTime.hour.toDouble() ;
+    double hour = dateTime.hour.toDouble();
 
     hour = hour + dateTime.minute / 60;
 
-    Path path = Path()
-      ..moveTo(
-          radius -
-              math.cos(AnalogUtil.deg2Rad(360.0 / 12 * hour - 90)) *
-                  (shortSideSpacing),
-          radius -
-              math.sin(AnalogUtil.deg2Rad(360.0 / 12 * hour - 90)) *
-                  (shortSideSpacing));
-    path.lineTo(
-        radius -
-            math.cos(AnalogUtil.deg2Rad(360.0 / 12 * (hour) - 45)) *
-                (shortSideSpacing / 3),
-        radius -
-            math.sin(AnalogUtil.deg2Rad(360.0 / 12 * (hour) - 45)) *
-                (shortSideSpacing / 3));
-
-    path.lineTo(
-        radius +
-            math.cos(AnalogUtil.deg2Rad(360.0 / 12 * hour - 90)) *
-                (radius - longSideSpacing),
-        radius +
-            math.sin(AnalogUtil.deg2Rad(360.0 / 12 * hour - 90)) *
-                (radius - longSideSpacing));
-
-    path.lineTo(
-        radius -
-            math.cos(AnalogUtil.deg2Rad(360 / 12 * (hour) - 135)) *
-                (shortSideSpacing / 3),
-        radius -
-            math.sin(AnalogUtil.deg2Rad(360 / 12 * (hour) - 135)) *
-                (shortSideSpacing / 3));
-
-    canvas.drawShadow(path, Colors.white, 2, true);
-    canvas.drawPath(path, _calendarPaint);
+    AnalogUtil.pointHand(
+      canvas,
+      _calendarPaint,
+      radius,
+      hour,
+      12,
+      shortSideSpacing,
+      longSideSpacing,
+      shortSideSpacing / 5,
+      isDrawShadow: true,
+    );
 
     canvas.drawCircle(_centerOffset, centerRadius, _centerCirclePaint);
 

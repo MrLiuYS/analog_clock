@@ -3,7 +3,7 @@
  * @Author: MrLiuYS
  * @Date: 2020-01-06 20:13:46
  * @LastEditors  : MrLiuYS
- * @LastEditTime : 2020-01-11 00:27:28
+ * @LastEditTime : 2020-01-11 01:28:44
  */
 import 'package:analog_clock/util/analog_util.dart';
 import 'package:flutter/material.dart';
@@ -42,8 +42,6 @@ class SecondHand extends StatefulWidget {
 class _SecondHandState extends State<SecondHand>
     with SingleTickerProviderStateMixin {
   AnimationController _controller;
-
-  double _second = 0;
 
   DateTime _dateTime;
 
